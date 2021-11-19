@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    depends_on:
+      - php
+      - mysql
+    ports:
+      - '80:80'
+    networks:
+      - laravel
+    volumes:
+      - ./src:/application
+
+  php:
+    container_name: php
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - laravel
+    volumes:
+      - ./src:/appliation
+
+  mysql:
+    container_name: mysql
+    image: mysql:8
+    ports:
+      - '3306:3306'
+    networks:
+      - laravel
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: application
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+
+  composer:
+    container_name: composer
+    image: composer:latest
+    networks:
+      - laravel
+    volumes:
+      - ./src:/appliation
+
+  artisan:
+    container_name: artisan
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    networks:
+      - laravel
+    volumes:
+      - /src:/application
+    working_dir: /application
+    entrypoint: ['php', 'artisan']
+
+  npm:
+    container_name: npm
+    image: node:alpine
+    networks:
+      - laravel
+    volumes:
+      - ./src:/application
+    working_dir: /application
+    entrypoint: ['npm']
+
+  phpunit:
+    container_name: phpunit
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    networks:
+      - laravel
+    volumes:
+      - ./src:/application
+    working_dir: /application
+    entrypoint: [ "/application/vendor/bin/phpunit" ]
+
+networks:
+  laravel:
+    name: laravel
