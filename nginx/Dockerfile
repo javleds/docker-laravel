@@ -1,5 +1,5 @@
 FROM nginx:stable-alpine
 
-ADD ./nginx/default.conf /etc/nginx/conf.d/default.conf
+ADD ./default.conf /etc/nginx/conf.d/default.conf
 
 RUN mkdir /application
