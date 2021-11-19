@@ -19,12 +19,13 @@ services:
   php:
     container_name: php
     build:
-      context: .
+      context: ./php
       dockerfile: Dockerfile
     networks:
       - laravel
     volumes:
       - ./src:/application
+    working_dir: /application
 
   mysql:
     container_name: mysql
