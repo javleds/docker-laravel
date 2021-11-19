@@ -24,7 +24,7 @@ services:
     networks:
       - laravel
     volumes:
-      - ./src:/appliation
+      - ./src:/application
 
   mysql:
     container_name: mysql
@@ -47,7 +47,8 @@ services:
     networks:
       - laravel
     volumes:
-      - ./src:/appliation
+      - ./src:/application
+    working_dir: /application
 
   artisan:
     container_name: artisan
