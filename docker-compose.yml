@@ -12,9 +12,9 @@ services:
     ports:
       - '80:80'
     networks:
-      - laravel
+      - app
     volumes:
-      - ./src:/application
+      - ./src:/app
 
   php:
     user: 1000:1000
@@ -23,10 +23,10 @@ services:
       context: ./php
       dockerfile: Dockerfile
     networks:
-      - laravel
+      - app
     volumes:
-      - ./src:/application
-    working_dir: /application
+      - ./src:/app
+    working_dir: /app
 
   mysql:
     container_name: mysql
@@ -34,12 +34,12 @@ services:
     ports:
       - '3306:3306'
     networks:
-      - laravel
+      - app
     volumes:
       - ./mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: application
+      MYSQL_DATABASE: app
       MYSQL_USER: admin
       MYSQL_PASSWORD: password
 
@@ -48,10 +48,10 @@ services:
     container_name: composer
     image: composer:latest
     networks:
-      - laravel
+      - app
     volumes:
-      - ./src:/application
-    working_dir: /application
+      - ./src:/app
+    working_dir: /app
 
   artisan:
     container_name: artisan
@@ -59,20 +59,20 @@ services:
       context: ./php
       dockerfile: Dockerfile
     networks:
-      - laravel
+      - app
     volumes:
-      - /src:/application
-    working_dir: /application
+      - /src:/app
+    working_dir: /app
     entrypoint: ['php', 'artisan']
 
   npm:
     container_name: npm
     image: node:alpine
     networks:
-      - laravel
+      - app
     volumes:
-      - ./src:/application
-    working_dir: /application
+      - ./src:/app
+    working_dir: /app
     entrypoint: ['npm']
 
   phpunit:
@@ -81,12 +81,12 @@ services:
       context: ./php
       dockerfile: Dockerfile
     networks:
-      - laravel
+      - app
     volumes:
-      - ./src:/application
-    working_dir: /application
-    entrypoint: [ "/application/vendor/bin/phpunit" ]
+      - ./src:/app
+    working_dir: /app
+    entrypoint: [ "/app/vendor/bin/phpunit" ]
 
 networks:
-  laravel:
-    name: laravel
+  app:
+    name: app

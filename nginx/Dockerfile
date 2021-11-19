@@ -2,4 +2,4 @@ FROM nginx:stable-alpine
 
 ADD ./default.conf /etc/nginx/conf.d/default.conf
 
-RUN mkdir /application
+RUN mkdir /app
