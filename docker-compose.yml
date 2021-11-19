@@ -17,6 +17,7 @@ services:
       - ./src:/application
 
   php:
+    user: 1000:1000
     container_name: php
     build:
       context: ./php
@@ -43,6 +44,7 @@ services:
       MYSQL_PASSWORD: password
 
   composer:
+    user: 1000:1000
     container_name: composer
     image: composer:latest
     networks:
