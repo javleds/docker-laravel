@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    depends_on:
+      - php
+      - mysql
+    ports:
+      - '80:80'
+    networks:
+      - app
+    volumes:
+      - .:/app
+
+  php:
+    user: 1000:1000
+    container_name: php
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    expose:
+      - 9003
+      - 9000
+    networks:
+      - app
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  mysql:
+    container_name: mysql
+    image: mysql:8
+    ports:
+      - '3306:3306'
+    networks:
+      - app
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: app
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+
+  composer:
+    user: 1000:1000
+    container_name: composer
+    image: composer:latest
+    networks:
+      - app
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  artisan:
+    container_name: artisan
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    networks:
+      - app
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: ['php', 'artisan']
+
+  npm:
+    container_name: npm
+    image: node:alpine
+    networks:
+      - app
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: ['npm']
+
+  phpunit:
+    container_name: phpunit
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    networks:
+      - app
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: ['/app/vendor/bin/phpunit']
+
+networks:
+  app:
+    name: app
